@@ -2,11 +2,15 @@
 % Please edit documentation in R/classes-plate.R
 \name{Plate}
 \alias{Plate}
-\title{Plate object}
+\title{Plate Object}
 \description{
-A class to represent the luminex plate. It contains information about
-the samples and analytes that were examined on the plate as well as
-some additional metadata and batch info
+The \code{Plate} object represents a Luminex assay plate and stores data related to
+its samples, analytes, metadata, and batch information. This object is typically
+created by functions such as \code{\link[=read_luminex_data]{read_luminex_data()}}, \code{\link[=process_file]{process_file()}}, or \code{\link[=process_dir]{process_dir()}}.
+
+It provides methods for accessing and manipulating data, including retrieving
+specific analyte measurements, filtering by sample type, and performing
+blank adjustments.
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -34,7 +38,10 @@ as the \code{sample_names} vector.}
 \item{\code{sample_types}}{(\code{character()})\cr
 Types of the samples that were examined on the plate.
 The possible values are \cr \code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD CURVE, POSITIVE CONTROL)}.
-This vector is in the same order as the \code{sample_names} vector.}
+This vector is in the same order as the \code{sample_names} vector.
+If the \code{\link{Plate}} object is read using \code{\link{read_luminex_data}}, then the sample types
+are usually detected based on the sample names according to the rules
+described in \code{\link{translate_sample_names_to_sample_types}}.}
 
 \item{\code{dilutions}}{(\code{character()})\cr
 A list containing names of the samples as keys and string representing dilutions as values.
@@ -115,7 +122,8 @@ during the reading process it is set to the name
 of the file from which the plate was read.}
 
 \item{\code{sample_names}}{(\code{character()})\cr
-Names of the samples that were examined on the plate.}
+Names of the samples that were examined on the plate. Sample names are by default ordered by location in the plate, using the row-major order.
+The first sample is the one in upper-left corner, then follows the ones in the first row, then the second row, and so on.}
 
 \item{\code{analyte_names}}{(\code{character()})\cr
 Names of the analytes that were examined on the plate.}
@@ -129,18 +137,25 @@ the \code{batch} field of the plate}
 Datetime object representing the date and time when the plate was created by the machine.}
 
 \item{\code{sample_locations}}{(\code{character()})\cr
-Locations of the samples on the plate.}
+Locations of the samples on the plate.
+Sample locations are ordered in the same way as samples in the input CSV file.}
 
 \item{\code{sample_types}}{(\code{character()})\cr
 Types of the samples that were examined on the plate.
-The possible values are \cr \code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD CURVE, POSITIVE CONTROL)}.}
+The possible values are \cr \code{c(ALL, BLANK, TEST, NEGATIVE CONTROL, STANDARD CURVE, POSITIVE CONTROL)}.
+Sample types are ordered in the same way as the \code{sample_names} vector.
+
+If the Plate object is initialised using the default methods ( \code{\link[=read_luminex_data]{read_luminex_data}}
+or any of the processing methods: \code{\link[=process_dir]{process_dir}}, \code{\link[=process_file]{process_file}} and \code{\link[=process_plate]{process_plate}})
+the sample types are detected based on the sample names according to the rules described in \code{\link[=translate_sample_names_to_sample_types]{translate_sample_names_to_sample_types}}.}
 
 \item{\code{dilutions}}{(\code{character()})\cr
 A list containing names of the samples as keys and string representing dilutions as values.
-The dilutions are represented as strings.}
+The dilutions are represented as strings. The dilutions are ordered in the same way as the \code{sample_names} vector}
 
 \item{\code{dilution_values}}{(\code{numeric()})\cr
-A list containing names of the samples as keys and numeric values representing dilutions as values.}
+A list containing names of the samples as keys and numeric values representing dilutions as values.
+The dilution values are ordered in the same way as the \code{sample_names} vector}
 
 \item{\code{default_data_type}}{(\code{character(1)})\cr
 The default data type that will be returned by the \code{get_data} method.
@@ -149,7 +164,8 @@ By default is set to \code{Median}.}
 \item{\code{data}}{(\code{list()})\cr
 A list containing dataframes with the data for each sample and analyte.
 The possible data types - the keys of the list are \cr \code{c(Median, Net MFI, Count, Avg Net MFI, Mean, Peak)}.
-In each dataframe, the rows represent samples and the columns represent analytes.}
+In each dataframe, the rows represent samples and the columns represent analytes.
+Rows of each dataframe are ordered in the same way as the \code{sample_names} vector.}
 
 \item{\code{batch_info}}{(\code{list()})\cr
 A list containing additional, technical information about the batch.}

@@ -48,12 +48,17 @@ is_valid_data_type <- function(data_type) {
 }
 
 
-#' @title Plate object
+#' @title
+#' Plate Object
 #'
 #' @description
-#' A class to represent the luminex plate. It contains information about
-#' the samples and analytes that were examined on the plate as well as
-#' some additional metadata and batch info
+#' The `Plate` object represents a Luminex assay plate and stores data related to
+#' its samples, analytes, metadata, and batch information. This object is typically
+#' created by functions such as [read_luminex_data()], [process_file()], or [process_dir()].
+#'
+#' It provides methods for accessing and manipulating data, including retrieving
+#' specific analyte measurements, filtering by sample type, and performing
+#' blank adjustments.
 #'
 #' @importFrom R6 R6Class
 #'
@@ -96,6 +101,9 @@ Plate <- R6::R6Class(
     #' Types of the samples that were examined on the plate.
     #' The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}.
     #' This vector is in the same order as the `sample_names` vector.
+    #' If the [`Plate`] object is read using [`read_luminex_data`], then the sample types
+    #' are usually detected based on the sample names according to the rules
+    #' described in [`translate_sample_names_to_sample_types`].
     sample_types = NULL,
     #'
     #' @field dilutions (`character()`)\cr
@@ -149,7 +157,8 @@ Plate <- R6::R6Class(
     #'  of the file from which the plate was read.
     #'
     #' @param sample_names (`character()`)\cr
-    #'  Names of the samples that were examined on the plate.
+    #'  Names of the samples that were examined on the plate. Sample names are by default ordered by location in the plate, using the row-major order.
+    #'  The first sample is the one in upper-left corner, then follows the ones in the first row, then the second row, and so on.
     #'
     #' @param analyte_names (`character()`)\cr
     #'  Names of the analytes that were examined on the plate.
@@ -164,17 +173,25 @@ Plate <- R6::R6Class(
     #'
     #' @param sample_locations (`character()`)\cr
     #'  Locations of the samples on the plate.
+    #'  Sample locations are ordered in the same way as samples in the input CSV file.
     #'
     #' @param sample_types (`character()`)\cr
     #'  Types of the samples that were examined on the plate.
     #'  The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}.
+    #'  Sample types are ordered in the same way as the `sample_names` vector.
+    #'
+    #'  If the Plate object is initialised using the default methods ( \code{\link[=read_luminex_data]{read_luminex_data}}
+    #'  or any of the processing methods: \code{\link[=process_dir]{process_dir}}, \code{\link[=process_file]{process_file}} and \code{\link[=process_plate]{process_plate}})
+    #'  the sample types are detected based on the sample names according to the rules described in \code{\link[=translate_sample_names_to_sample_types]{translate_sample_names_to_sample_types}}.
+    #'
     #'
     #' @param dilutions (`character()`)\cr
     #'  A list containing names of the samples as keys and string representing dilutions as values.
-    #'  The dilutions are represented as strings.
+    #'  The dilutions are represented as strings. The dilutions are ordered in the same way as the `sample_names` vector
     #'
     #' @param dilution_values (`numeric()`)\cr
     #'  A list containing names of the samples as keys and numeric values representing dilutions as values.
+    #'  The dilution values are ordered in the same way as the `sample_names` vector
     #'
     #' @param default_data_type (`character(1)`)\cr
     #'  The default data type that will be returned by the `get_data` method.
@@ -184,6 +201,7 @@ Plate <- R6::R6Class(
     #'  A list containing dataframes with the data for each sample and analyte.
     #'  The possible data types - the keys of the list are \cr \code{c(`r toString(VALID_DATA_TYPES)`)}.
     #'  In each dataframe, the rows represent samples and the columns represent analytes.
+    #'  Rows of each dataframe are ordered in the same way as the `sample_names` vector.
     #'
     #' @param batch_info (`list()`)\cr
     #'  A list containing additional, technical information about the batch.
@@ -454,6 +472,13 @@ Plate <- R6::R6Class(
         df <- plate$data[[datatype]]
         blanks_df <- df[blanks_filter, , drop = FALSE]
         clamp_value <- as.numeric(apply(blanks_df, 2, method))
+
+        count_higher <- sum(df[!blanks_filter, ] > clamp_value, na.rm = TRUE)
+        # perform a sanity check if the clamp value is higher than the min of the remaining samples
+        if (count_higher < ncol(df) * nrow(df) / 2) {
+          warning("The blank value is higher than value of half of the samples and analytes, verify if your data is correctly read.")
+        }
+
 
         for (col in seq_len(ncol(df))) {
           df[(!blanks_filter), col] <- clamp(df[(!blanks_filter), col], lower = clamp_value[col])

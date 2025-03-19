@@ -29,23 +29,20 @@ colnames(df)
 df[1:5, 1:5]
 
 ## -----------------------------------------------------------------------------
+process_file(plate_filepath, layout_filepath, output_dir = example_dir, generate_report = FALSE)
+
+## -----------------------------------------------------------------------------
 plate$summary()
 
 plate$summary(include_names = TRUE) # more detailed summary
 
-plate$sample_names
-plate$analyte_names
+plate$sample_names[1:5] # print some of the sample names
+plate$analyte_names[1:4] # print some of the analyte names
 
 ## -----------------------------------------------------------------------------
 summary(plate)
 
 ## -----------------------------------------------------------------------------
-plot_standard_curve_analyte(plate, analyte_name = "OC43_S")
-
-plate$blank_adjustment()
-
-print(plate$blank_adjusted)
-
 plot_standard_curve_analyte(plate, analyte_name = "OC43_S")
 
 ## -----------------------------------------------------------------------------
@@ -62,6 +59,12 @@ plot_mfi_for_analyte(plate, analyte_name = "OC43_S")
 plot_mfi_for_analyte(plate, analyte_name = "Spike_6P")
 
 ## -----------------------------------------------------------------------------
+plate$blank_adjusted # verify if the data is already adjusted
+
+## -----------------------------------------------------------------------------
+plate$blank_adjustment()
+
+## -----------------------------------------------------------------------------
 model <- create_standard_curve_model_analyte(plate, analyte_name = "OC43_S")
 
 model
@@ -69,6 +72,10 @@ model
 ## -----------------------------------------------------------------------------
 plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"))
 plot_standard_curve_analyte_with_model(plate, model, log_scale = c("all"), plot_asymptote = FALSE)
+
+## -----------------------------------------------------------------------------
+model_hdh <- create_standard_curve_model_analyte(plate, analyte_name = "RBD_omicron")
+plot_standard_curve_analyte_with_model(plate, model_hdh, log_scale = c("all"))
 
 ## -----------------------------------------------------------------------------
 mfi_values <- plate$data$Median$OC43_S

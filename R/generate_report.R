@@ -199,5 +199,3 @@ generate_levey_jennings_report <-
       output_path
     ))
   }
-
-
