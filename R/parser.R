@@ -44,6 +44,100 @@ parse_xponent_locations <- function(xponent_locations) {
   locations
 }
 
+#' Extract the experiment date from xPONENT raw output
+#'
+#' @description
+#' This method extracts the real experiment date - BatchStartTime,
+#' which corresponds to the time when the experiment was conducted.
+#'
+#' The Date in the top of the xPONENT file refers to the moment when
+#' the CSV xPONENT file was exported from the system
+#'
+#' In case the file was parsed with an `exact_parse` parameter, it looks for
+#' a parameter in a BatchMetadata list. Otherwise it tries to read it from the raw header.
+#'
+#' In case this method fails, it fails back to read the Date from the file
+#'
+#' @param xponent_output The xPONENT output list to be processed.
+#' @param verbose Logical, whether to print messages (default: TRUE)
+#'
+#' @return A character string representing the datetime of the experiment
+#' @keywords internal
+extract_xponent_experiment_date <- function(xponent_output, verbose = TRUE) {
+  # 1. Try from Header$BatchMetadata
+  batch_time_str <- tryCatch(
+    {
+      time_str <- xponent_output$Header$BatchMetadata$BatchStartTime
+      if (is.null(time_str)) {
+        stop("BatchStartTime not found in BatchMetadata.")
+      }
+      if (verbose) {
+        message("BatchStartTime successfully extracted from the metadata")
+      }
+      time_str
+    },
+    error = function(e) {
+      if (verbose) {
+        message("Failed to extract from BatchMetadata: ", e$message)
+      }
+      NULL
+    }
+  )
+
+  # 2. Try from raw Header string
+  if (is.null(batch_time_str)) {
+    batch_time_str <- tryCatch(
+      {
+        header_raw <- xponent_output$Header[[1]]
+        match <- regmatches(
+          header_raw,
+          regexpr("(?<=BatchStartTime\",\\\")[^\"]+", header_raw, perl = TRUE)
+        )
+        if (length(match) == 0) {
+          stop("BatchStartTime not found in raw header.")
+        }
+        if (verbose) {
+          message("BatchStartTime successfully extracted from the header.")
+        }
+        match
+      },
+      error = function(e) {
+        if (verbose) {
+          message("Failed to extract from raw header: ", e$message)
+        }
+        NULL
+      }
+    )
+  }
+
+  # 3. Fallback to ProgramMetadata Date + Time
+  if (is.null(batch_time_str)) {
+    batch_time_str <- tryCatch(
+      {
+        date_str <- xponent_output$ProgramMetadata[["Date"]]
+        time_str <- xponent_output$ProgramMetadata[["Time"]]
+        if (is.null(date_str) ||
+          is.null(time_str)) {
+          stop("Date/Time not found in ProgramMetadata.")
+        }
+        fallback <- paste(date_str, time_str)
+        if (verbose) {
+          message("Fallback datetime successfully extracted from ProgramMetadata.")
+        }
+        fallback
+      },
+      error = function(e) {
+        if (verbose) {
+          message("Failed to extract fallback datetime: ", e$message)
+        }
+        NA_character_
+      }
+    )
+  }
+
+  return(batch_time_str)
+}
+
 #' Handle differences in datetimes
 #'
 #' @description
@@ -126,10 +220,8 @@ postprocess_xponent <- function(xponent_output, verbose = TRUE) {
   analyte_names <- find_analyte_names(data$Median)
   data <- remove_non_analyte_columns(data)
 
-  datetime_str <- paste(
-    xponent_output$ProgramMetadata[["Date"]],
-    xponent_output$ProgramMetadata[["Time"]]
-  )
+  # parse the date of an experiment
+  datetime_str <- extract_xponent_experiment_date(xponent_output, verbose = verbose)
   plate_datetime <- handle_datetime(datetime_str, "xPONENT")
 
   list(
@@ -150,14 +242,16 @@ valid_formats <- c("xPONENT", "INTELLIFLEX")
 #' Read Luminex Data
 #'
 #' @description
-#' Reads a Luminex plate file and returns a [`Plate`] object containing the extracted data.
+#' Reads a Luminex plate file and returns a \link{Plate} object containing the extracted data.
 #' Optionally, a layout file can be provided to specify the arrangement of samples on the plate.
+#'
+#' @details
 #'
 #' The function supports two Luminex data formats:
 #' - **xPONENT**: Used by older Luminex machines.
 #' - **INTELLIFLEX**: Used by newer Luminex devices.
 #'
-#' ## Workflow
+#' @section Workflow:
 #' 1. Validate input parameters, ensuring the specified format is supported.
 #' 2. Read the plate file using the appropriate parser:
 #'    - xPONENT files are read using [read_xponent_format()].
@@ -167,18 +261,26 @@ valid_formats <- c("xPONENT", "INTELLIFLEX")
 #'    - Extract sample locations and analyte names.
 #'    - Parse the date and time of the experiment.
 #'
-#' ## File Structure
+#' @section File Structure:
 #' - **Plate File (`plate_filepath`)**: A CSV file containing Luminex fluorescence intensity data.
 #' - **Layout File (`layout_filepath`)** (optional): An Excel or CSV file containing the plate layout.
 #'   - The layout file should contain a table with **8 rows and 12 columns**, where each cell corresponds to a well location.
 #'   - The values in the table represent the sample names for each well.
 #'
-#' ## Sample types detection
+#' @section Sample types detection:
 #'
-#' The [`read_luminex_data`] method automatically detects the sample types based on the sample names, unless provided the `sample_types` parameter.
-#' The sample types are detected used the [`translate_sample_names_to_sample_types`] method.
+#' The [`read_luminex_data()`] method automatically detects the sample types based on the sample names, unless provided the `sample_types` parameter.
+#' The sample types are detected used the [`translate_sample_names_to_sample_types()`] method.
 #' In the documentation of this method, which can be accessed with command `?translate_sample_names_to_sample_types`, you can find the detailed description of the sample types detection.
 #'
+#' ## Duplicates in sample names
+#' In some cases, we want to analyse the sample with the same name twice on one plate. The package allows for such situations, but we assume that the user knows what they are doing.
+#'
+#' When importing sample names (either from the layout file or the plate file), the function will check for duplicates. If any are found, it will issue a warning like:
+#'
+#' **Duplicate sample names detected: A, B. Renaming to make them unique.**
+#'
+#' Then it will add simple numeric suffixes (e.g. “.1”, “.2”) to the repeated sample names so that every name is unique while keeping the original text easy to recognize.
 #'
 #' @param plate_filepath (`character(1)`) Path to the Luminex plate file.
 #' @param layout_filepath (`character(1)`, optional) Path to the Luminex layout file.
@@ -201,8 +303,9 @@ valid_formats <- c("xPONENT", "INTELLIFLEX")
 #' @param dilutions (`numeric()`, optional) A vector of dilutions to override extracted values.
 #' @param verbose (`logical(1)`, default = `TRUE`)
 #'   - Whether to print additional information and warnings.
+#' @param ... Additional arguments. Ignored in this method. Here included for better integration with the pipeline
 #'
-#' @return A [`Plate`] object containing the parsed Luminex data.
+#' @return A \link{Plate} object containing the parsed Luminex data.
 #'
 #' @examples
 #' # Read a Luminex plate file with an associated layout file
@@ -226,7 +329,8 @@ read_luminex_data <- function(plate_filepath,
                               default_data_type = "Median",
                               sample_types = NULL,
                               dilutions = NULL,
-                              verbose = TRUE) {
+                              verbose = TRUE,
+                              ...) {
   if (!(format %in% valid_formats)) {
     stop("Invalid format: ", format, ". Select from: ", paste(valid_formats, collapse = ", "))
   }

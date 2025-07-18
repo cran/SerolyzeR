@@ -18,11 +18,10 @@
 #'
 #' This equation is referred to as the Richards' equation. More information about the model can be found in the `nplr` package documentation.
 #'
-#' After the model is fitted to the data, the RAU values can be predicted using the `predict` method.
+#' After the model is fitted to the data, the RAU values can be predicted using the [`predict.Model()`] method.
 #' The RAU value is simply a predicted dilution value (using the standard curve) for a given MFI
 #' multiplied by 1,000 000 to have a more readable value.
-#' For more information about the differences between dilution, RAU and MFI values, please see the
-#' "Normalisation" section in the "Basic SerolyzeR functionalities" vignette.
+#' For more information about the differences between dilution, RAU and MFI values, please see \HTMLVignette{example_script}{normalisation}{Normalisation section in the Basic SerolyzeR functionalities vignette}.
 #'
 #'
 #' @examples
@@ -98,6 +97,8 @@ Model <- R6::R6Class(
     #' @param mfi_max (`numeric(1)`)\cr
     #'   Enables to set the maximum MFI value used for scaling MFI values to the range \[0, 1\].
     #'   Use values before any transformations (e.g., before the `log10` transformation)
+    #' @param ... Additional parameters, ignored here. Used here only for consistency with the SerolyzeR pipeline
+    #'
     #'
     initialize = function(analyte,
                           dilutions,
@@ -108,7 +109,8 @@ Model <- R6::R6Class(
                           log_mfi = TRUE,
                           scale_mfi = TRUE,
                           mfi_min = NULL,
-                          mfi_max = NULL) {
+                          mfi_max = NULL,
+                          ...) {
       stopifnot(is.character(analyte) &&
         !is.null(analyte) && nchar(analyte) > 0)
 
@@ -226,6 +228,7 @@ Model <- R6::R6Class(
     #'
     #' @param eps (`numeric(1)`)\cr
     #' A small value used to avoid numerical issues close to the asymptotes
+    #' @param ... Additional parameters. This method ignores them, used here for compatibility with the pipeline.
     #'
     #' Warning: High dose hook effect affects which dilution and MFI values
     #' are used to fit the logistic model and by extension affects the over_max_extrapolation value.
@@ -241,7 +244,8 @@ Model <- R6::R6Class(
     #'
     predict = function(mfi,
                        over_max_extrapolation = 0,
-                       eps = 1e-6) {
+                       eps = 1e-6,
+                       ...) {
       private$assert_model_fitted()
       original_mfi <- mfi
       # Extrapolation maximum
@@ -496,9 +500,6 @@ create_standard_curve_model_analyte <- function(plate,
 #' In that case, MFI values associated with dilutions above (or equal to)
 #' `high_dose_threshold` should be removed from the analysis.
 #'
-#' For more information about this effect please refer to:
-#' Namburi, R. P. et. al. (2014) High-dose hook effect.
-#  DOI: 10.4103/2277-8632.128412
 #'
 #' For the `nplr` model the recommended number of standard curve samples
 #' is at least 4. If the high dose hook effect is detected but the number
@@ -510,6 +511,9 @@ create_standard_curve_model_analyte <- function(plate,
 #' the maximum value to which the predicted RAU MFI values are extrapolated / truncated.
 #'
 #' The function returns a logical vector that can be used to subset the MFI values.
+#'
+#' @references
+#' Namburi, R. P. et. al. (2014) High-dose hook effect. DOI: 10.4103/2277-8632.128412
 #'
 #' @param mfi (`numeric()`)
 #' @param dilutions (`numeric()`)

@@ -101,9 +101,9 @@ Plate <- R6::R6Class(
     #' Types of the samples that were examined on the plate.
     #' The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}.
     #' This vector is in the same order as the `sample_names` vector.
-    #' If the [`Plate`] object is read using [`read_luminex_data`], then the sample types
+    #' If the \link{Plate} object is read using [`read_luminex_data()`], then the sample types
     #' are usually detected based on the sample names according to the rules
-    #' described in [`translate_sample_names_to_sample_types`].
+    #' described in [`translate_sample_names_to_sample_types()`].
     sample_types = NULL,
     #'
     #' @field dilutions (`character()`)\cr
@@ -117,7 +117,7 @@ Plate <- R6::R6Class(
     dilution_values = NULL,
     #'
     #' @field default_data_type (`character(1)`)\cr
-    #' The default data type that will be returned by the `get_data` method.
+    #' The default data type that will be returned by the `Plate$get_data()` method.
     #' By default is set to `Median`.
     default_data_type = NULL,
     #'
@@ -322,15 +322,17 @@ Plate <- R6::R6Class(
     #' @param analyte An analyte name or its id of which data we want to extract.
     #'  If set to 'ALL' returns data for all analytes.
     #'
-    #' @param sample_type is a type of the sample we want to extract data from.
+    #' @param sample_type_filter is a type of the sample we want to extract data from.
     #'  The possible values are \cr \code{c(`r toString(VALID_SAMPLE_TYPES)`)}. Default value is `ALL`.
+    #'  `sample_type_filter` can be also of length greater than 1. If `sample_type` is longer than 1 and `ALL` is in the vector,
+    #'  the method returns all the sample types.
     #' @param data_type The parameter specifying which data type should be returned.
     #'  This parameter has to take one of values: \cr \code{c(`r toString(VALID_DATA_TYPES)`)}.
     #'  What's more, the `data_type` has to be present in the plate's data
     #'  Default value is plate's `default_data_type`, which is usually `Median`.
     #'
     #' @return Dataframe containing information about a given sample type and analyte
-    get_data = function(analyte, sample_type = "ALL", data_type = self$default_data_type) {
+    get_data = function(analyte, sample_type_filter = "ALL", data_type = self$default_data_type) {
       # check if the analyte exists in analytes_names
       if (!is.null(analyte) && !is.na(analyte)) {
         if (!(analyte %in% c(self$analyte_names, "ALL"))) {
@@ -340,14 +342,7 @@ Plate <- R6::R6Class(
         stop("Passed analyte is either NULL or NA")
       }
 
-      # check if the sample_type is a valid sample type
-      if (!is.null(sample_type) && !is.na(sample_type)) {
-        if (!is_valid_sample_type(sample_type)) {
-          stop("Sample type ", sample_type, " is not a valid sample type")
-        }
-      } else {
-        stop("Passed sample type is either NULL or NA")
-      }
+      # check if the sample_type_filter is a valid sample type is performed in the filter
 
       # check if the data_type is a valid data type
       if (!is.null(data_type) && !is.na(data_type)) {
@@ -361,11 +356,7 @@ Plate <- R6::R6Class(
       }
 
       # get samples of the given type, data_type and analyte and return them
-      if (sample_type == "ALL") {
-        valid_samples <- rep(TRUE, length(self$sample_types))
-      } else {
-        valid_samples <- self$sample_types == sample_type
-      }
+      valid_samples <- filter_sample_types(self$sample_types, sample_type_filter)
 
       data_of_specified_type <- self$data[[data_type]]
       if (analyte == "ALL") {
@@ -428,7 +419,7 @@ Plate <- R6::R6Class(
     #' values to the aggregated value of the `BLANK` samples for each analyte separately.
     #'
     #' The purpose of this operation is to unify the data by clamping values below the background noise.
-    #' how this method works was inspired by the paper https://doi.org/10.1038/s41598-020-57876-0 which covers the quality control in the MBA.
+    #' how this method works was inspired by the paper "Quality control of multiplex antibody detection in samples from large-scale surveys: the example of malaria in Haiti." which covers the quality control in the MBA.
     #'
     #' In short, this operation firstly calculates the aggregate of MFI in the `BLANK` samples
     #' (available methods are: `min`, `max`, `mean`, `median`)
@@ -438,6 +429,8 @@ Plate <- R6::R6Class(
     #'
     #'  This operation is recommended to be performed before any further analysis, but is optional.
     #'  Skipping it before further analysis is allowed, but will result in a warning.
+    #'
+    #'  @references van den Hoogen, L.L., Présumé, J., Romilus, I. et al. Quality control of multiplex antibody detection in samples from large-scale surveys: the example of malaria in Haiti. Sci Rep 10, 1135 (2020). https://doi.org/10.1038/s41598-020-57876-0
     #'
     #' @param threshold The method used to calculate the background value for each analyte.
     #' Every value below this threshold will be clamped to the threshold value.

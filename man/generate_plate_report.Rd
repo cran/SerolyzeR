@@ -11,7 +11,8 @@ generate_plate_report(
   output_dir = "reports",
   counts_lower_threshold = 50,
   counts_higher_threshold = 70,
-  additional_notes = NULL
+  additional_notes = NULL,
+  ...
 )
 }
 \arguments{
@@ -38,13 +39,18 @@ If it equals to \code{NULL} the current working directory will be used. Default 
 \item{counts_higher_threshold}{(\code{numeric(1)}) The higher threshold for the counts plots (works for each analyte). Default is 70.}
 
 \item{additional_notes}{(\code{character(1)}) Additional notes to be included in the report. Contents of this fields are left to the user's discretion. If not provided, the field will not be included in the report.}
+
+\item{...}{Additional params passed to the plots created in the report.}
 }
 \value{
 A report.
 }
 \description{
 This function generates a report for a plate. The report contains all the necessary information about the plate, from the general plate parameters, such as examination date, to the breakdown of the analytes' plots.
-The report is generated using the \code{plate_report_template.Rmd} template.
+The report is generated using the R Markdown template file
+\code{plate_report_template.Rmd}, located in the
+\code{inst/templates} directory of the package. You can access it using:
+\code{system.file("templates/plate_report_template.Rmd", package = "SerolyzeR")}.
 }
 \examples{
 

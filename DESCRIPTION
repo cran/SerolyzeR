@@ -4,7 +4,7 @@ Title: Reading, Quality Control and Preprocessing of MBA (Multiplex
         Bead Assay) Data
 Description: Speeds up the process of loading raw data from MBA (Multiplex Bead Assay) examinations, performs quality control checks, and automatically normalises the data, preparing it for more advanced, downstream tasks. The main objective of the package is to create a simple environment for a user, who does not necessarily have experience with R language. The package is developed within the project 'PvSTATEM', which is an international project aiming for malaria elimination.
 BugReports: https://github.com/mini-pw/SerolyzeR/issues
-Version: 1.2.0
+Version: 1.3.0
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 Authors@R: c(
@@ -18,14 +18,14 @@ Authors@R: c(
             comment = c(ORCID = "0000-0002-8542-1706")))
 RoxygenNote: 7.3.2
 Imports: dplyr, ggplot2, nplr, R6, readxl, stringi, stringr, grid, png,
-        tools, ggrepel, lubridate, R.utils, svglite, fs, scales
+        tools, ggrepel, lubridate, R.utils, svglite, fs, scales, rlang
 Suggests: knitr, qpdf, rmarkdown, testthat (>= 3.0.0)
 Config/testfhat/edition: 3
 VignetteBuilder: knitr
 URL: https://github.com/mini-pw/SerolyzeR,
         https://mini-pw.github.io/SerolyzeR/
 NeedsCompilation: no
-Packaged: 2025-05-06 07:47:35 UTC; tymot
+Packaged: 2025-07-18 08:20:34 UTC; tymot
 Author: Tymoteusz Kwiecinski [aut, cre] (ORCID:
     <https://orcid.org/0009-0006-7362-9821>),
   Jakub Grzywaczewski [aut],
@@ -35,4 +35,4 @@ Author: Tymoteusz Kwiecinski [aut, cre] (ORCID:
   Nuno Sepulveda [ths] (ORCID: <https://orcid.org/0000-0002-8542-1706>)
 Maintainer: Tymoteusz Kwiecinski <tymoteuszkwiecinski@gmail.com>
 Repository: CRAN
-Date/Publication: 2025-05-06 08:20:02 UTC
+Date/Publication: 2025-07-18 09:00:02 UTC
