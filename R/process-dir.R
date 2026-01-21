@@ -122,6 +122,8 @@ detect_mba_format <- function(filepath, format = NULL) {
     return("xPONENT")
   } else if (grepl(SerolyzeR.env$intelliflex_pattern, basename, ignore.case = TRUE)) {
     return("INTELLIFLEX")
+  } else if (grepl(SerolyzeR.env$bioplex_pattern, basename, ignore.case = TRUE)) {
+    return("BIOPLEX")
   } else {
     stop("The format of the file could not be detected.")
   }
@@ -202,8 +204,8 @@ get_output_dir <- function(
 #'   - If `TRUE`, searches for plate files in subdirectories as well.
 #' @param flatten_output_dir (`logical(1)`, default = `FALSE`)
 #'   - If `TRUE`, saves output files directly in `output_dir`, ignoring the input directory structure.
-#' @param format (`character(1)`, optional) Luminex data format. If `NULL`, it is automatically detected. Options: `'xPONENT'`, `'INTELLIFLEX'`.
-#' By default equals to `'xPONENT'`.
+#' @param format (`character(1)`, optional) Luminex data format. If `NULL`, it is automatically detected.
+#' Options: `'xPONENT'`, `'INTELLIFLEX'`, `'BIOPLEX'`. By default equals to `'xPONENT'`.
 #' @param layout_filepath (`character(1)`, optional) Path to a layout file. If `NULL`, the function attempts to detect it automatically.
 #' @param normalisation_types (`character()`, default = `c("MFI", "RAU", "nMFI")`)
 #'   - The normalisation types to apply. Supported values: `"MFI"`, `"RAU"`, `"nMFI"`.
@@ -370,7 +372,7 @@ process_dir <- function(
 
       file_name <- paste0("merged_", normalisation_type, "_", file_ending, ".csv")
       output_path <- fs::path_join(c(output_dir, file_name))
-      write.csv(merged_df, output_path, row.names = FALSE)
+      save_csv(merged_df, output_path, row_names_col = "") # No row names column
       verbose_cat("Merged output saved to: ", output_path, "\n", verbose = verbose)
     }
   }

@@ -19,7 +19,7 @@
 #'   - If it does not exist, it will be created.
 #' @param format (`character(1)`, default = `'xPONENT'`)
 #'   - Format of the Luminex data.
-#'   - Available options: `'xPONENT'`, `'INTELLIFLEX'`.
+#'   - Available options: `'xPONENT'`, `'INTELLIFLEX'`, `'BIOPLEX'`.
 #' @param generate_report (`logical(1)`, default = `FALSE`)
 #'   - If `TRUE`, generates a quality control report using [generate_plate_report()].
 #' @param process_plate (`logical(1)`, default = `TRUE`)
