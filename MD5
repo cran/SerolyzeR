@@ -1,4 +1,4 @@
-ea3d8959d01de4e55105ef250f8382ea *DESCRIPTION
+befdc1466dfe49a3af4a1bdb48915d71 *DESCRIPTION
 c3d8557158c1810a7ee2575e8fbad382 *LICENSE
 8524926d01a02df76830fc3e96c4e67d *NAMESPACE
 e9eec3ff63c1ed7afd6e3cd41d0817cd *R/classes-model.R
@@ -7,7 +7,7 @@ a91d115539db114785cab8d1f139c11b *R/classes-plate_builder.R
 c7a76bc3441670b56412f581760dde53 *R/config.R
 90b957cecf96f61be91a7a095c48ddcb *R/generate_report.R
 3ebe577b18093e2df41f118084897920 *R/get-nmfi.R
-9a89e1818f65861e6b0741b1ec7d92fc *R/helpers.R
+e73385970198b2b701b4fd038ad46460 *R/helpers.R
 a04c4db39492bbfa5cd840c4de0b2383 *R/merge-plate-outputs.R
 d520e8a2f78fbb99f130f9f4d78fb978 *R/parser-bioplex.R
 291d274de325bdabb8d687186233811b *R/parser-intelliflex.R
@@ -17,16 +17,16 @@ be288b6a0b726afe0faf552d1c80b71a *R/parser-layout.R
 413e7357d062753a65724d9516c04788 *R/plots-levey_jennings.R
 eda0ebe576aa6763c4d860f8db13087c *R/plots-mfi.R
 80aec443f2576f5386fef8497453216c *R/plots-plate.R
-698a45a73cddd5f0731473fa3ba02c01 *R/plots-standard_curve.R
+28f2a584c8aef1a47fa17d3ddf9a47e4 *R/plots-standard_curve.R
 a4c37c9c8dd5f541f422324510d646c8 *R/process-dir.R
 6dd57484eef916f8156885b3c97528de *R/process-file.R
 b7e7b689bd23760b6a3391e6fbeb7810 *R/process-plate.R
 b4e1c0f0b2c3e55569ce643d99e6d394 *README.md
-346c7fd833c51031994956532ab0e894 *build/partial.rdb
+57658c641596e58e7aa000fd53a0f97a *build/partial.rdb
 06b6a9004ac78948ba8e59b4e41dfb17 *build/vignette.rds
 720cdfc62e248ef1c8e6631d0305998e *inst/doc/example_script.R
 c7ba8202996ede844391a710a36f9ace *inst/doc/example_script.Rmd
-6ae015d167562f15d86baf9b13eb4bdc *inst/doc/example_script.html
+3762709f9dde7a3711122783549e378f *inst/doc/example_script.html
 ba0d83923af38f4705ff0315d2d50050 *inst/extdata/CovidOISExPONTENT.csv
 50cf560cade437c2fd7ae4ad70b76054 *inst/extdata/CovidOISExPONTENT_CO.csv
 eb0c8d4af8f2140b01705054bc18f64b *inst/extdata/CovidOISExPONTENT_CO_layout.xlsx
@@ -67,11 +67,11 @@ be279339738478891878c639819688d8 *inst/extdata/random_no_standard_curve.csv
 debf4f5daf0ebbad711b4ba43f72691d *inst/extdata/synthetic_bioplex.xlsx
 5bf15020d5a905e85b49e79414e3b3f0 *inst/extdata/synthetic_bioplex_layout.xlsx
 245088fad4d6d2ca90db897ad63ff780 *inst/img/96_well_plate.png
-d791354a7e1aac5dbd681304fbc0db69 *inst/img/EU.jpg
+272c955e893253072e4733567de11d0f *inst/img/EU.jpg
 f7053e8eff7caaac632c874c045478fd *inst/img/PvSTATEM.png
 6aa0ad9cf63917fc6361a61f27268dc5 *inst/img/WUT.png
 d5fe0011072a84c14768550078c9d305 *inst/img/report_warnings.png
-595df8a9e69787880010728c1cac7419 *inst/templates/levey_jennings_report_template.Rmd
+6330517206b0ea096049ed6587a88e33 *inst/templates/levey_jennings_report_template.Rmd
 b9c9224b4a750b9fc980fa01450cb447 *inst/templates/plate_report_template.Rmd
 0da6706cdfa62b6e3e8659bf7b08fea3 *man/Model.Rd
 3b4b14403955b7d37cc6642db546a4a8 *man/Plate.Rd
@@ -113,7 +113,6 @@ ba58ee8a09c4fb1378ca5f4a2a68ba66 *man/is_valid_data_type.Rd
 8a19b7b1c2b8a2ed023337ec0cc1936c *man/macros/macros.Rd
 348b5549f6ec20bdec98708a790239dd *man/merge_dataframes.Rd
 bab09880a1ea10920e1da563726550c2 *man/merge_plate_outputs.Rd
-5a5ed47d465618ffb91abfefb6804359 *man/move_legend_to_separate_plot.Rd
 bfd7a1831c5610ce972962095d998353 *man/plot_counts.Rd
 294b5b1871287e9d146c2d8d672f41ad *man/plot_layout.Rd
 721691e739b0e9a9c4b7fa05f6df7b5a *man/plot_levey_jennings.Rd
@@ -121,7 +120,7 @@ e8af47cf2bb82b48d6433dff7284ff26 *man/plot_mfi_for_analyte.Rd
 6f5dbe7af75803192ab827d19d13e8e1 *man/plot_plate.Rd
 10aaa4f13dc1e0ee46c77a0f5dad4685 *man/plot_standard_curve_analyte.Rd
 3658fc2aa0ade153b1e0601b11642238 *man/plot_standard_curve_analyte_with_model.Rd
-c6d8923964393e17f8de89b0000689ea *man/plot_standard_curve_stacked.Rd
+f86bc6393d4565f68c0ad39bda0c58d3 *man/plot_standard_curve_stacked.Rd
 2fd7eec2a5c25af62c75690d37a81790 *man/plot_standard_curve_thumbnail.Rd
 500b50793cf090a98733364d0f1b328f *man/predict.Model.Rd
 a51787ba8e2575952738dd01cbf5b3ca *man/process_dir.Rd

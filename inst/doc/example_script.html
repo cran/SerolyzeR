@@ -11,7 +11,7 @@
 
 <meta name="author" content="Tymoteusz Kwieciński" />
 
-<meta name="date" content="2026-01-21" />
+<meta name="date" content="2026-02-20" />
 
 <title>Basic SerolyzeR functionalities</title>
 
@@ -352,7 +352,7 @@ display: none;
 
 <h1 class="title toc-ignore">Basic SerolyzeR functionalities</h1>
 <h4 class="author">Tymoteusz Kwieciński</h4>
-<h4 class="date">2026-01-21</h4>
+<h4 class="date">2026-02-20</h4>
 
 </div>
 
@@ -373,7 +373,7 @@ layout_filepath &lt;- system.file(&quot;extdata&quot;, &quot;CovidOISExPONTENT_l
 
 
 plate &lt;- read_luminex_data(plate_filepath, layout_filepath) # read the data</code></pre>
-<pre><code>#&gt; Reading Luminex data from: /tmp/Rtmp6J0d4d/Rinst181fc65a8493e/SerolyzeR/extdata/CovidOISExPONTENT.csv
+<pre><code>#&gt; Reading Luminex data from: /tmp/Rtmpo7nCDp/Rinst3f23307f2b3f/SerolyzeR/extdata/CovidOISExPONTENT.csv
 #&gt; using format xPONENT</code></pre>
 <pre><code>#&gt; [32m
 #&gt; New plate object has been created with name: CovidOISExPONTENT!
@@ -434,7 +434,7 @@ output to a temporary directory.</p>
 <pre class="r"><code>example_dir &lt;- tempdir(check = TRUE) # create a temporary directory to store the output
 df &lt;- process_plate(plate, output_dir = example_dir)</code></pre>
 <pre><code>#&gt; Fitting the models and predicting RAU for each analyte</code></pre>
-<pre><code>#&gt; Saving the computed RAU values to a CSV file located in: &#39;/tmp/RtmpxBE0n2/CovidOISExPONTENT_RAU.csv&#39;</code></pre>
+<pre><code>#&gt; Saving the computed RAU values to a CSV file located in: &#39;/tmp/Rtmpcj3Ygf/CovidOISExPONTENT_RAU.csv&#39;</code></pre>
 <pre class="r"><code>colnames(df)</code></pre>
 <pre><code>#&gt;  [1] &quot;Spike_6P&quot;      &quot;ME&quot;            &quot;HKU1_S&quot;        &quot;OC43_NP&quot;      
 #&gt;  [5] &quot;OC43_S&quot;        &quot;HKU1_NP&quot;       &quot;X229E_NP&quot;      &quot;Mumps_NP&quot;     
@@ -461,18 +461,18 @@ in a directory.</p>
 normalised output files to the specified directory. An example execution
 of the function is shown below.</p>
 <pre class="r"><code>process_file(plate_filepath, layout_filepath, output_dir = example_dir, generate_report = FALSE)</code></pre>
-<pre><code>#&gt; Reading Luminex data from: /tmp/Rtmp6J0d4d/Rinst181fc65a8493e/SerolyzeR/extdata/CovidOISExPONTENT.csv
+<pre><code>#&gt; Reading Luminex data from: /tmp/Rtmpo7nCDp/Rinst3f23307f2b3f/SerolyzeR/extdata/CovidOISExPONTENT.csv
 #&gt; using format xPONENT</code></pre>
 <pre><code>#&gt; [32m
 #&gt; New plate object has been created with name: CovidOISExPONTENT!
 #&gt; [39m
 #&gt; Processing plate &#39;CovidOISExPONTENT&#39;
 #&gt; Extracting the raw MFI to the output dataframe
-#&gt; Saving the computed MFI values to a CSV file located in: &#39;/tmp/RtmpxBE0n2/CovidOISExPONTENT_MFI.csv&#39;</code></pre>
+#&gt; Saving the computed MFI values to a CSV file located in: &#39;/tmp/Rtmpcj3Ygf/CovidOISExPONTENT_MFI.csv&#39;</code></pre>
 <pre><code>#&gt; Fitting the models and predicting RAU for each analyte</code></pre>
-<pre><code>#&gt; Saving the computed RAU values to a CSV file located in: &#39;/tmp/RtmpxBE0n2/CovidOISExPONTENT_RAU.csv&#39;
+<pre><code>#&gt; Saving the computed RAU values to a CSV file located in: &#39;/tmp/Rtmpcj3Ygf/CovidOISExPONTENT_RAU.csv&#39;
 #&gt; Computing nMFI values for each analyte
-#&gt; Saving the computed nMFI values to a CSV file located in: &#39;/tmp/RtmpxBE0n2/CovidOISExPONTENT_nMFI.csv&#39;</code></pre>
+#&gt; Saving the computed nMFI values to a CSV file located in: &#39;/tmp/Rtmpcj3Ygf/CovidOISExPONTENT_nMFI.csv&#39;</code></pre>
 <pre><code>#&gt; Plate with 96 samples and 30 analytes</code></pre>
 <p>It saves <code>RAU</code> and <code>nMFI</code> values to the
 <code>output_dir</code>, working similarly to the
@@ -739,7 +739,7 @@ plate name but with the <code>_nMFI</code> suffix.</p>
 
 df &lt;- process_plate(plate, output_dir = example_dir, normalisation_type = &quot;nMFI&quot;)</code></pre>
 <pre><code>#&gt; Computing nMFI values for each analyte
-#&gt; Saving the computed nMFI values to a CSV file located in: &#39;/tmp/RtmpxBE0n2/CovidOISExPONTENT_nMFI.csv&#39;</code></pre>
+#&gt; Saving the computed nMFI values to a CSV file located in: &#39;/tmp/Rtmpcj3Ygf/CovidOISExPONTENT_nMFI.csv&#39;</code></pre>
 <pre class="r"><code>df[1:5, 1:5]</code></pre>
 <pre><code>#&gt;          Spike_6P        ME     HKU1_S    OC43_NP     OC43_S
 #&gt; B     0.006735897 0.1466667 0.03318584 0.03409836 0.06314244
