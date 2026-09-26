@@ -4,7 +4,7 @@ Title: Reading, Quality Control and Preprocessing of MBA (Multiplex
         Bead Assay) Data
 Description: Speeds up the process of loading raw data from MBA (Multiplex Bead Assay) examinations, performs quality control checks, and automatically normalises the data, preparing it for more advanced, downstream tasks. The main objective of the package is to create a simple environment for a user, who does not necessarily have experience with R language. The package is developed within the project 'PvSTATEM', which is an international project aiming for malaria elimination.
 BugReports: https://github.com/mini-pw/SerolyzeR/issues
-Version: 1.4.1
+Version: 1.5.0
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 Authors@R: c(
@@ -16,18 +16,18 @@ Authors@R: c(
             comment = c(ORCID = "0000-0001-8423-1823")),
         person("Nuno", "Sepulveda", email = "nuno.sepulveda@pw.edu.pl", role = c("ths"), 
             comment = c(ORCID = "0000-0002-8542-1706")))
-RoxygenNote: 7.3.3
 Imports: dplyr, ggplot2, nplr, R6, readxl, stringi, stringr, grid, png,
         tools, ggrepel, lubridate, R.utils, svglite, fs, scales, rlang,
         patchwork, cellranger
-Suggests: knitr, qpdf, furrr, future, qs2, rmarkdown, testthat (>=
-        3.0.0)
-Config/testfhat/edition: 3
+Suggests: knitr, qpdf, furrr, future, shiny, shinyFiles, DT, qs2,
+        rmarkdown, testthat (>= 3.0.0)
+Config/testthat/edition: 3
 VignetteBuilder: knitr
 URL: https://github.com/mini-pw/SerolyzeR,
         https://mini-pw.github.io/SerolyzeR/
+Config/roxygen2/version: 8.1.0
 NeedsCompilation: no
-Packaged: 2026-02-20 11:12:10 UTC; zetrext
+Packaged: 2026-09-26 16:16:14 UTC; zetrext
 Author: Jakub Grzywaczewski [aut, cre],
   Tymoteusz Kwiecinski [aut] (ORCID:
     <https://orcid.org/0009-0006-7362-9821>),
@@ -37,4 +37,4 @@ Author: Jakub Grzywaczewski [aut, cre],
   Nuno Sepulveda [ths] (ORCID: <https://orcid.org/0000-0002-8542-1706>)
 Maintainer: Jakub Grzywaczewski <jakubzgrzywaczewski@gmail.com>
 Repository: CRAN
-Date/Publication: 2026-02-20 11:40:30 UTC
+Date/Publication: 2026-09-26 17:00:44 UTC
